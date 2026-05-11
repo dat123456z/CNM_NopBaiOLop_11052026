@@ -19,7 +19,28 @@ const createUserService = async (name, email, password) => {
             password: hashPassword,
             role: "User"
         })
-        return result;
+
+        // Tạo access token
+        const payload = {
+            email: result.email,
+            name: result.name
+        }
+        const access_token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            {
+                expiresIn: process.env.JWT_EXPIRE
+            }
+        )
+
+        return {
+            EC: 0,
+            access_token,
+            user: {
+                email: result.email,
+                name: result.name
+            }
+        };
 
     } catch (error) {
         console.log(error);
